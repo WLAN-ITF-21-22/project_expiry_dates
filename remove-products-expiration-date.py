@@ -13,8 +13,8 @@ import mysql.connector  # if not recognized, use "pip install mysql-connector-py
 #################
 
 # Excel-documents
-path_add_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
-name_add_products = 'Barcodes.xlsx'
+path_remove_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
+name_remove_products = 'Barcodes sold.xlsx'
 
 # MySQL
 mysql_host="127.0.0.1"
@@ -27,7 +27,7 @@ mysql_database="unicentaopos"
 ######################
 
 # Excel
-xlsx_file = Path(path_add_products, name_add_products)
+xlsx_file = Path(path_remove_products, name_remove_products)
 wb_obj = openpyxl.load_workbook(xlsx_file)
 
 sheet = wb_obj.active
@@ -58,25 +58,26 @@ def print_list(list):
 def read_excel():
     """
     Reads the Excel sheet set earlier.
-    Only the last entry (not accounting for gaps) is read.
-    Returns: a list containing the last entry's barcode, amount and expiration date
+    Returns all barcodes of sold products and the amount sold
     """
     # Global variables
     global sheet
     # Start at 2nd place, 1st spot reserved for headers
     index = 2
+    products = []
     # search for latest entry
     while sheet["A{}".format(index)].value != None:
+        # get values
+        barcode = sheet["A{}".format(index)].value
+        amount = sheet["B{}".format(index)].value
+        # add to list
+        products.append([barcode, amount])
+        # increment
         index += 1
-    index -= 1
-    # get values
-    barcode = sheet["A{}".format(index)].value
-    amount = sheet["B{}".format(index)].value
-    expiration_date = sheet["C{}".format(index)].value
 
     # return values
-    return [barcode, amount, expiration_date]
-    
+    return products
+
 
 def find_id_db(barcode):
     """
@@ -103,20 +104,63 @@ def find_id_db(barcode):
         return result[0][0]
 
 
-def check_expiry_database(id, expiration_date):
+def check_expiry_database(id):
     """
     Checks whether the product already exists within the expiration date database
     returns: True or False
     """
     # Global variables
     global db_cursor
-    # Check if the product with the expiration date already appears in the database
+    # Check if the product date already appears in the database
     db_cursor.execute("SELECT * \
         FROM expired\
-        WHERE id = {} AND vervaldatum = {}".format(id, expiration_date))
+        WHERE id = {}".format(id))
     result = db_cursor.fetchall()
     # If the product is not yet in the expired database
     return result == []
+
+
+def get_oldest_product(id):
+    """
+    Searches the "expired" database for the product with the oldest expiration date
+    Returns: the expireID (Primary key for database "expired") of the product with the oldest expiration date
+    """
+    # Global variables
+    global db_cursor
+    # if the product exists in the "expired" database, continue
+    if check_expiry_database(id):
+        db_cursor.execute("SELECT expireID\
+            FROM expired\
+            WHERE id = {}\
+            SORT BY vervaldatum".format(id))  # ASC or DESC
+        result = db_cursor.fetchall()
+        return result[0][0]
+
+
+def get_amount(expireID):
+    """
+    Returns: the amount of products with the given ID
+    """
+    # Global variables
+    global db_cursor
+    db_cursor.execute("SELECT aantal\
+        FROM expired\
+        WHERE expireID = {}".format(expireID))
+    result = db_cursor.fetchall()
+    return result[0][0]
+
+
+def remove_amount_db(id, amount):
+    # Global variables
+    global db_cursor
+    # if the product exists in the "expired" database, reduce the amount value
+    if check_expiry_database(id):
+        expireID = get_oldest_product(id)
+        db_cursor.execute("UPDATE expired\
+            SET aantal -= {}\
+            WHERE expireID = {}".format(amount, expireID))
+        # if the amount is zero, delete the entry
+                
 
 
 
@@ -147,7 +191,4 @@ def write_entry_expiration_db(id, scanned_product):
 ### EXECUTION OF CODE ###
 #########################
 
-scanned_product = read_excel()
-# barcode_db_id = find_id_db(scanned_product)
-barcode_db_id = find_id_db('05410228274230')
-write_entry_expiration_db(barcode_db_id, scanned_product)
+sold_products = read_excel()
