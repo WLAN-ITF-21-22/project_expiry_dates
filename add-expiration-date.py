@@ -75,7 +75,7 @@ def read_excel():
     expiration_date = sheet["C{}".format(index)].value
 
     # return values
-    return [barcode, amount, expiration_date]
+    return [barcode, amount, expiration_date.date()]
     
 
 def find_id_db(barcode):
@@ -113,10 +113,10 @@ def check_expiry_database(id, expiration_date):
     # Check if the product with the expiration date already appears in the database
     db_cursor.execute("SELECT * \
         FROM expired\
-        WHERE id = {} AND vervaldatum = {}".format(id, expiration_date))
+        WHERE id = '{}' AND vervaldatum = '{}'".format(id, expiration_date))
     result = db_cursor.fetchall()
-    # If the product is not yet in the expired database
-    return result == []
+    # # If the product is not yet in the expired database
+    return result != []
 
 
 
@@ -135,12 +135,15 @@ def write_entry_expiration_db(id, scanned_product):
     if check_expiry_database(id, expiration_date):
         # if the product is already in the database with the correct expiration date, update the amount
         db_cursor.execute("UPDATE expired \
-            SET aantal += {}\
-            WHERE id = {} AND vervaldatum = {}".format(amount, id, expiration_date))
+            SET aantal = (aantal + {})\
+            WHERE id = '{}' AND vervaldatum = '{}'".format(amount, id, expiration_date))
+        # print("updated")
     else:
         # if the product is not yet in the database, add it
         db_cursor.execute("INSERT INTO expired(id, aantal, vervaldatum)\
-            VALUES({}, {}, {})".format(id, amount, expiration_date))
+            VALUES('{}', {}, '{}')".format(id, amount, expiration_date))
+        # print("inserted")
+    mydb.commit()
 
 
 #########################
@@ -148,6 +151,5 @@ def write_entry_expiration_db(id, scanned_product):
 #########################
 
 scanned_product = read_excel()
-# barcode_db_id = find_id_db(scanned_product)
-barcode_db_id = find_id_db('05410228274230')
+barcode_db_id = find_id_db(scanned_product[0])
 write_entry_expiration_db(barcode_db_id, scanned_product)

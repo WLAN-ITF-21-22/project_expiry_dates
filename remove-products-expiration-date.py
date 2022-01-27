@@ -160,7 +160,8 @@ def remove_amount_db(id, amount):
             SET aantal -= {}\
             WHERE expireID = {}".format(amount, expireID))
         # if the amount is zero, delete the entry
-                
+
+        
 
 
 
