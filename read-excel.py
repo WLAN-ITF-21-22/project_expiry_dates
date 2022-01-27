@@ -6,9 +6,6 @@ wb_obj = openpyxl.load_workbook(xlsx_file)
 
 sheet = wb_obj.active
 
-# create a new text file
-textfile = open("emails.txt", "w", encoding="UTF-8")
-
 index = 1
 
 while sheet["A{}".format(index)].value != None:
