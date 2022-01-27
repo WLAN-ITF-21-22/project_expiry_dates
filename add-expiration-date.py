@@ -13,7 +13,8 @@ import mysql.connector  # if not recognized, use "pip install mysql-connector-py
 #################
 
 # Excel-documents
-path_add_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
+#path_add_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
+path_add_products = '.'
 name_add_products = 'Barcodes.xlsx'
 
 # MySQL
