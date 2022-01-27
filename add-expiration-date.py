@@ -3,7 +3,7 @@
 ###############
 
 # Reading Excel
-import openpyxl
+import openpyxl  # if not recognized, use "pip install openpyxl"
 from pathlib import Path
 # MySQL
 import mysql.connector  # if not recognized, use "pip install mysql-connector-python"
