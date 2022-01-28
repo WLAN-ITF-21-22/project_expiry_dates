@@ -22,6 +22,11 @@ host = '127.0.0.1'
 database = 'unicentaopos'
 db_connection_str = 'mysql+pymysql://{}:{}@{}/{}'.format(username, password, host, database)
 
+"""
+'wkhtmlopdf' needs to be installed for this to work
+If not yet installed, go to folder 'wkhtmlopdf' 
+and execute 'wkhtmltox-0.12.6-1.msvc2015-win64.exe' to install it
+"""
 path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 
 #####################
