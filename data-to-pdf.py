@@ -6,9 +6,6 @@
 from sqlalchemy import create_engine        # pip install sqlalchemy
 import pandas as pd                         # sql install pandas
 import pymysql as pymysql                   # pip install pymysql
-# Plot data with matplotlib
-import matplotlib.pyplot as plt             # pip install matplotlib
-from matplotlib.backends.backend_pdf import PdfPages
 # Plot data with pdfkit
 import pdfkit                               # pip install pdfkit
 # Get date for document naming
@@ -57,33 +54,6 @@ def pandas_read_db():
     # Read
     expired_dataframe = pd.read_sql(sql_string, con=db_connection)
     return expired_dataframe
-
-def build_pdf_matplotlib(dataframe):
-    """
-    Uses dataframe formatted data to build pdf document
-    Creates pdf documents in folder "Reports"
-    Returns: nothing
-    """
-    # Document layout
-    fig, ax =plt.subplots(figsize=(12,1))
-    ax.axis('tight')
-    ax.axis('off')
-    plt.title('Vervaldata')
-
-    # Add data
-    text_alignment = 'left'
-    expiration_table = ax.table(cellText=dataframe.values,\
-                colLabels=dataframe.columns,\
-                loc='upper center',\
-                cellLoc=text_alignment,\
-                colLoc=text_alignment)
-    # Name of document
-    name = 'Rapport vervaldata - {}'.format(datetime.now().date())
-    folder = "Reports"
-    pp = PdfPages("{}/{}.pdf".format(folder, name))
-    #pp = PdfPages("Reports/foo.pdf")
-    pp.savefig(fig, bbox_inches='tight')
-    pp.close()
 
 
 def build_pdf_html(dataframe):
