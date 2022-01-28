@@ -20,7 +20,7 @@ name_remove_products = 'Barcodes sold.xlsx'
 
 # MySQL
 mysql_host="127.0.0.1"
-mysql_user="unicenta"
+mysql_user="unicenta"  # or "root"
 mysql_password="abc123!"
 mysql_database="unicentaopos"
 
