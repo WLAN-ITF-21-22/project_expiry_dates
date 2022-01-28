@@ -4,10 +4,10 @@
 
 # Reading Excel
 from tabnanny import check
-import openpyxl # if not recognized, use "pip install openpyxl"
+import openpyxl             # pip install openpyxl
 from pathlib import Path
 # MySQL
-import mysql.connector  # if not recognized, use "pip install mysql-connector-python"
+import mysql.connector      # pip install mysql-connector-python
 
 #################
 ### VARIABLES ###
