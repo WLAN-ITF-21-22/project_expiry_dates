@@ -8,6 +8,8 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email import encoders
+import schedule                                 # pip install schedule
+import time
 
 #################
 ### VARIABLES ###
@@ -22,9 +24,14 @@ In de bijlage kan u het document vinden met de overschot van deze week.
 Met vriendelijke groeten
 """
 
+send_mail_now = True
+send_mail_time = "13:18"
+
 sender = 'supermarkt.test@gmail.com'
 password = '2ccs02AH3'
 receiver = 'vzwsupermarkt.test@gmail.com'
+
+reports_folder = 'Reports'
 
 #####################
 ### CONFIGURATION ###
@@ -38,7 +45,7 @@ msg['Subject'] = 'Briefing'
 current_date = datetime.now()
 
 name = 'Rapport vervaldata - {}'.format(current_date.date())
-pdfname = './Reports/{}.pdf'.format(name)
+pdfname = './{}/{}.pdf'.format(reports_folder, name)
 
 #################
 ### FUNCTIONS ###
@@ -83,9 +90,6 @@ def send_mail():
     # Message
     text = construct_message()
 
-    #send_time = dt.datetime.now()
-    #time.sleep(send_time.timestamp() - time.time())
-
     # Send, quit and print feedback
     session.sendmail(sender, receiver, text)
     session.quit()
@@ -95,4 +99,14 @@ def send_mail():
 ### EXECUTION ###
 #################
 
-send_mail()
+# Sending a mail every day of the week at a certain time
+schedule.every().monday.at(send_mail_time).do(send_mail)
+schedule.every().tuesday.at(send_mail_time).do(send_mail)
+schedule.every().wednesday.at(send_mail_time).do(send_mail)
+schedule.every().thursday.at(send_mail_time).do(send_mail)
+schedule.every().friday.at(send_mail_time).do(send_mail)
+
+# Run code continuously
+while True:
+    schedule.run_pending()
+    time.sleep(30)

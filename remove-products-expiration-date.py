@@ -16,7 +16,7 @@ import mysql.connector      # pip install mysql-connector-python
 # Excel-documents
 # path_remove_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
 path_remove_products = '.'
-name_remove_products = 'Barcodes sold.xlsx'
+name_remove_products = 'Producten verwijderen.xlsx'
 
 # MySQL
 mysql_host="127.0.0.1"

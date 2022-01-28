@@ -15,7 +15,7 @@ import mysql.connector      # pip install mysql-connector-python
 # Excel-documents
 #path_add_products = 'C:\\Users\\Lander Wuyts\\IT\\Sys Eng Projectweek\\Python'
 path_add_products = '.'
-name_add_products = 'Barcodes.xlsx'
+name_add_products = 'Producten toevoegen.xlsx'
 
 # MySQL
 mysql_host="127.0.0.1"
