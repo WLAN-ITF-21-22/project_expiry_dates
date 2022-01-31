@@ -28,13 +28,6 @@ mysql_database="unicentaopos"
 ### INITIALIZATION ###
 ######################
 
-# Excel
-xlsx_remove_file = Path(path_remove_products, name_remove_products)
-wb_remove_obj = openpyxl.load_workbook(xlsx_remove_file)
-
-sheet_remove = wb_remove_obj.active
-
-
 # MySQL
 mydb = mysql.connector.connect(
     host=mysql_host,
@@ -64,7 +57,13 @@ def read_excel():
     Returns all barcodes of sold products and the amount sold
     """
     # Global variables
-    global sheet_remove
+    global path_remove_products
+    global name_remove_products
+    # Excel
+    xlsx_remove_file = Path(path_remove_products, name_remove_products)
+    wb_remove_obj = openpyxl.load_workbook(xlsx_remove_file)
+
+    sheet_remove = wb_remove_obj.active
     # Start at 2nd place, 1st spot reserved for headers
     index = 2
     products = []

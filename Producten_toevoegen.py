@@ -27,12 +27,6 @@ mysql_database="unicentaopos"
 ### INITIALIZATION ###
 ######################
 
-# Excel
-xlsx_add_file = Path(path_add_products, name_add_products)
-wb_add_obj = openpyxl.load_workbook(xlsx_add_file)
-
-sheet_add = wb_add_obj.active
-
 # MySQL
 mydb = mysql.connector.connect(
     host=mysql_host,
@@ -46,6 +40,8 @@ db_cursor = mydb.cursor()
 #################
 ### FUNCTIONS ###
 #################
+
+
 
 def print_list(list):
     """
@@ -62,7 +58,13 @@ def read_excel():
     Returns: a list containing every cell's barcode, amount and expiration date (except the first cell)
     """
     # Global variables
-    global sheet_add
+    global path_add_products
+    global name_add_products
+    # Excel
+    xlsx_add_file = Path(path_add_products, name_add_products)
+    wb_add_obj = openpyxl.load_workbook(xlsx_add_file)
+
+    sheet_add = wb_add_obj.active
     # Start at 2nd place, 1st spot reserved for headers
     index = 2
     products = []

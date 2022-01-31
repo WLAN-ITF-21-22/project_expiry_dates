@@ -33,14 +33,6 @@ reports_folder = 'Reports'
 #####################
 
 msg = MIMEMultipart()
-msg['From'] = sender
-msg['To'] = receiver
-msg['Subject'] = 'Briefing'
-
-current_date = datetime.now()
-
-name = 'Rapport vervaldata - {}'.format(current_date.date())
-pdfname = './{}/{}.pdf'.format(reports_folder, name)
 
 #################
 ### FUNCTIONS ###
@@ -48,8 +40,19 @@ pdfname = './{}/{}.pdf'.format(reports_folder, name)
 
 def retrieve_pdf():
     # Global variables
-    global pdfname
+    global sender
+    global receiver
+    global reports_folder
     global msg
+    # Email configuration
+    msg['From'] = sender
+    msg['To'] = receiver
+    msg['Subject'] = 'Briefing'
+
+    current_date = datetime.now()
+
+    name = 'Rapport vervaldata - {}'.format(current_date.date())
+    pdfname = './{}/{}.pdf'.format(reports_folder, name)
     # Retrieve pdf and encode
     binary_pdf = open(pdfname, 'rb')
 

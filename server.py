@@ -83,17 +83,6 @@ reports_folder = 'Reports'
 ### INITIALIZATION ###
 ######################
 
-# Excel
-xlsx_add_file = Path(path_add_products, name_add_products)
-wb_add_obj = openpyxl.load_workbook(xlsx_add_file)
-
-sheet_add = wb_add_obj.active
-
-xlsx_remove_file = Path(path_remove_products, name_remove_products)
-wb_remove_obj = openpyxl.load_workbook(xlsx_remove_file)
-
-sheet_remove = wb_remove_obj.active
-
 # MySQL
 mydb = mysql.connector.connect(
     host=mysql_host,
@@ -109,16 +98,8 @@ db_connection_str = 'mysql+pymysql://{}:{}@{}/{}'.format(username, password, hos
 db_connection = create_engine(db_connection_str)
 config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
-# e-mail
+# E-mail
 msg = MIMEMultipart()
-msg['From'] = sender
-msg['To'] = receiver
-msg['Subject'] = 'Briefing'
-
-current_date = datetime.now()
-
-name = 'Rapport vervaldata - {}'.format(current_date.date())
-pdfname = './{}/{}.pdf'.format(reports_folder, name)
 
 # Flask
 app = Flask(__name__)
