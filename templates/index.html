@@ -5,26 +5,59 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <title>PoC</title>
 </head>
 <body>
     <main class="container mt-3">
-        <h1>Dashboard</h1>
-        <button>
-            <a href="/add-product/">Scan producten in</a>
-        </button>
-        <button>
-            <a href="/remove-product/">Scan producten uit</a>
-        </button>
-        <button>
-            <a href="/create-report/">Maak overzicht vervaldata aan (PDF)</a>
-        </button>
-        <button>
-            <a href="/send-email/">E-mail</a>
-        </button>
-        <button>
-            <a href="/open-report/" target="_blank">Toon verslag</a>
-        </button>
+        <h1 class="mb-5 pt-4">Dashboard</h1>
+        <div class="row col-12 mt-4 ">
+            <div class="col-2">
+                <img class="ml-3" src="{{ url_for('static', filename='images/scanner.png') }}" alt="Scanner" >
+            </div>
+            <div class="row col-10 ml-2 ">
+                <a href="/add-product">
+                    <button class="btn btn-success mb-5">
+                        Scan producten in
+                    </button>
+                </a>
+                <a href="/remove-product/">
+                    <button class="btn btn-danger mb-5 ml-2">
+                        Scan producten uit
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="row col-12 mt-4">
+            <div class="col-2">
+                <img class="ml-3" src="{{ url_for('static', filename='images/pdf.png') }}" alt="PDF" >
+            </div>
+            <div class="row col-10 ml-2 mb-3">
+                <a href="/create-report/">
+                    <button class="btn btn-outline-primary mb-3" href="/create-report/">
+                        Maak overzicht vervaldata aan (PDF)
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="row col-12 mt-4 pb-4">
+            <div class="col-2">
+                <img class="ml-3" src="{{ url_for('static', filename='images/Gmail.png') }}" alt="Mail" >
+            </div>
+            <div class="row col-10 ml-2 ">
+                <a href="/send-email/">
+                    <button class="btn btn-outline-success" href="/send-email/">
+                        E-mail
+                    </button>
+                </a>
+            </div>
+        </div>
+        <a href="/open-report/" target="_blank">
+            <button href="/open-report/" target="_blank">
+                Toon verslag
+            </button>
+        </a>
     </main>
 </body>
 </html>
