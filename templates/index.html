@@ -7,11 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <title>PoC</title>
+    <title>Dashboard</title>
 </head>
 <body>
     <main class="container mt-3">
         <h1 class="mb-5 pt-4">Dashboard</h1>
+        <div>
         <div class="row col-12 mt-4 ">
             <div class="col-2">
                 <img class="ml-3" src="{{ url_for('static', filename='images/scanner.png') }}" alt="Scanner" >
@@ -41,23 +42,30 @@
                 </a>
             </div>
         </div>
+
+
         <div class="row col-12 mt-4 pb-4">
             <div class="col-2">
                 <img class="ml-3" src="{{ url_for('static', filename='images/Gmail.png') }}" alt="Mail" >
             </div>
-            <div class="row col-10 ml-2 ">
+            <div class="row col-5 ml-2 pt-3">
                 <a href="/send-email/">
                     <button class="btn btn-outline-success" href="/send-email/">
                         E-mail
                     </button>
                 </a>
             </div>
+            <div class="row col-5 ml-2 pt-3 justify-content-end">
+                <a href="/open-report/" target="_blank">
+                    <button class="btn btn-outline-primary mb-3" href="/open-report/" target="_blank">
+                        Toon verslag
+                    </button>
+                </a>
+            </div>
         </div>
-        <a href="/open-report/" target="_blank">
-            <button href="/open-report/" target="_blank">
-                Toon verslag
-            </button>
-        </a>
+        <div id="verslag" class="row col-4 mt-4 pb-4 ">
+            
+        </div>
     </main>
 </body>
 </html>

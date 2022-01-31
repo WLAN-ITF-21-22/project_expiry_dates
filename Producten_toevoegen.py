@@ -19,7 +19,7 @@ name_add_products = 'Producten toevoegen.xlsx'
 
 # MySQL
 mysql_host="127.0.0.1"
-mysql_user="unicenta"  # or "root"
+mysql_user="root"  # or "root"
 mysql_password="abc123!"
 mysql_database="unicentaopos"
 

@@ -102,7 +102,11 @@ h6 {
 h1{
     text-align: center;
 }
+.verslag{
+  justify-content: right;
+  padding-bottom: 40px;
 
+}
 p {
   margin-top: 0;
   margin-bottom: 1rem;
