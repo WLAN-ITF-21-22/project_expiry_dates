@@ -29,10 +29,11 @@ mysql_database="unicentaopos"
 ######################
 
 # Excel
-xlsx_file = Path(path_remove_products, name_remove_products)
-wb_obj = openpyxl.load_workbook(xlsx_file)
+xlsx_remove_file = Path(path_remove_products, name_remove_products)
+wb_remove_obj = openpyxl.load_workbook(xlsx_remove_file)
 
-sheet = wb_obj.active
+sheet_remove = wb_remove_obj.active
+
 
 # MySQL
 mydb = mysql.connector.connect(
@@ -63,15 +64,15 @@ def read_excel():
     Returns all barcodes of sold products and the amount sold
     """
     # Global variables
-    global sheet
+    global sheet_remove
     # Start at 2nd place, 1st spot reserved for headers
     index = 2
     products = []
     # search for latest entry
-    while sheet["A{}".format(index)].value != None:
+    while sheet_remove["A{}".format(index)].value != None:
         # get values
-        barcode = sheet["A{}".format(index)].value
-        amount = sheet["B{}".format(index)].value
+        barcode = sheet_remove["A{}".format(index)].value
+        amount = sheet_remove["B{}".format(index)].value
         # add to list
         products.append([barcode, amount])
         # increment
@@ -176,13 +177,11 @@ def remove_amount_db(id, amount):
         
 
 
-def loop_remove_products():
+def loop_remove_products(sold_products):
     """
     Loops over a list of (Excel) entries,
     executing "remove_amount_db" for every product
     """
-    # Global variables
-    global sold_products
     # loop over sold_products and remove amount for every product
     for product in sold_products:
         barcode = product[0]
@@ -195,5 +194,5 @@ def loop_remove_products():
 ### EXECUTION OF CODE ###
 #########################
 
-sold_products = read_excel()
-loop_remove_products()
+# sold_products = read_excel()
+# loop_remove_products()
