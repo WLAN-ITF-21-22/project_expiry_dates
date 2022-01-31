@@ -95,4 +95,4 @@ def send_mail():
 #################
 
 # Sending a mail when executing the code
-send_mail()
+# send_mail()
