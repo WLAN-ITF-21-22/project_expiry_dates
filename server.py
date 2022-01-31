@@ -8,7 +8,12 @@ import sys
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
+# Installation of modules
 # install('flask')
+# install('openpyxl')
+# install('mysql-connector-python')
+# install('squalchemy')
+# install('pdfkit')
 
 ###############
 ### IMPORTS ###
@@ -63,8 +68,7 @@ database = 'unicentaopos'
 
 path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 
-# e-mail
-
+# E-mail
 message = """
 Geachte,
 
@@ -108,10 +112,12 @@ app = Flask(__name__)
 ### EXECUTION OF CODE ###
 #########################
 
+# Homepage
 @app.route('/')
 def index():
   return render_template('index.html')
 
+# "Scan producten in"-knop
 @app.route('/add-product/')
 def add_product():
   print ('Adding products to expired database')
@@ -123,6 +129,7 @@ def add_product():
   
   return redirect("http://127.0.0.1:5000/")
 
+# "Scan producten uit"-knop
 @app.route('/remove-product/')
 def remove_product():
   print('Removing products from expired database')
@@ -132,6 +139,7 @@ def remove_product():
 
   return redirect("http://127.0.0.1:5000/")
 
+# "PDF-verslag"-knop
 @app.route('/create-report/')
 def create_report():
   print('Creating a pdf report in the Reports folder')
@@ -142,6 +150,7 @@ def create_report():
 
   return redirect("http://127.0.0.1:5000/")
 
+# "Verstuur verslag via mail"-knop
 @app.route('/send-email/')
 def send_email():
   print("Sending email")
@@ -150,11 +159,13 @@ def send_email():
 
   return redirect("http://127.0.0.1:5000/")
 
+# "Open HTML verslag"-knop
 @app.route('/open-report/')
 def open_redirect():
   print("Toon rapport")
 
   return render_template('Report.html')
 
+# Debug mode?
 if __name__ == '__main__':
   app.run(debug=True)
