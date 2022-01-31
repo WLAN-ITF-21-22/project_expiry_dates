@@ -34,7 +34,6 @@ path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 
 db_connection = create_engine(db_connection_str)
 config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-current_date = datetime.now()
 
 #################
 ### FUNCTIONS ###
@@ -68,9 +67,10 @@ def build_pdf_html(dataframe):
     """
     # Global variables
     global config
-    global current_date
+    current_date = datetime.now()
+
     # Build document
-    file = open('Report template.html', 'w')
+    file = open('templates/Report.html', 'w')
     contents = dataframe.to_html()
     # Write document
     file.write(write_html_heading())
@@ -81,7 +81,7 @@ def build_pdf_html(dataframe):
     name = 'Rapport vervaldata - {}'.format(current_date.date())
     folder = "Reports"
     # Save document
-    pdfkit.from_file('Report template.html', \
+    pdfkit.from_file('templates/Report.html', \
         "{}/{}.pdf".format(folder,name), \
         configuration=config)
 
@@ -93,7 +93,7 @@ def write_html_heading():
     Returns: string with html header (including css)
     """
     # Global variables
-    global current_date
+    current_date = datetime.now()
     # html text
     text = '''
     <!DOCTYPE html>
@@ -189,6 +189,6 @@ def write_html_ccs():
 ### EXECUTION ###
 #################
 
-db_info = pandas_read_db()
-build_pdf_html(db_info)
+# db_info = pandas_read_db()
+# build_pdf_html(db_info)
 

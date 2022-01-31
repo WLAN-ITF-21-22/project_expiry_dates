@@ -28,10 +28,10 @@ mysql_database="unicentaopos"
 ######################
 
 # Excel
-xlsx_file = Path(path_add_products, name_add_products)
-wb_obj = openpyxl.load_workbook(xlsx_file)
+xlsx_add_file = Path(path_add_products, name_add_products)
+wb_add_obj = openpyxl.load_workbook(xlsx_add_file)
 
-sheet = wb_obj.active
+sheet_add = wb_add_obj.active
 
 # MySQL
 mydb = mysql.connector.connect(
@@ -62,16 +62,16 @@ def read_excel():
     Returns: a list containing every cell's barcode, amount and expiration date (except the first cell)
     """
     # Global variables
-    global sheet
+    global sheet_add
     # Start at 2nd place, 1st spot reserved for headers
     index = 2
     products = []
     # search for latest entry
-    while sheet["A{}".format(index)].value != None:
+    while sheet_add["A{}".format(index)].value != None:
         # get values
-        barcode = sheet["A{}".format(index)].value
-        amount = sheet["B{}".format(index)].value
-        expiration_date = sheet["C{}".format(index)].value
+        barcode = sheet_add["A{}".format(index)].value
+        amount = sheet_add["B{}".format(index)].value
+        expiration_date = sheet_add["C{}".format(index)].value
         # add to lists
         products.append([barcode, amount, expiration_date.date()])
         # increment
@@ -153,7 +153,7 @@ def write_entry_expiration_db(id, scanned_product):
 ### EXECUTION OF CODE ###
 #########################
 
-scanned_products = read_excel()
-for scanned_product in scanned_products:
-    barcode_db_id = find_id_db(scanned_product[0])
-    write_entry_expiration_db(barcode_db_id, scanned_product)
+# scanned_products = read_excel()
+# for scanned_product in scanned_products:
+#     barcode_db_id = find_id_db(scanned_product[0])
+#     write_entry_expiration_db(barcode_db_id, scanned_product)
