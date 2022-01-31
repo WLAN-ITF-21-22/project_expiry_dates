@@ -607,6 +607,7 @@ pre code {
   .container-sm,
   .container {
     max-width: 720px;
+    margin-left: 10px;
   }
 }
 

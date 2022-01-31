@@ -17,7 +17,7 @@ from datetime import datetime
 
 username = 'root'
 password = '1234'
-host = '127.0.0.1'
+host = 'localhost'
 database = 'unicentaopos'
 db_connection_str = 'mysql+pymysql://{}:{}@{}/{}'.format(username, password, host, database)
 
