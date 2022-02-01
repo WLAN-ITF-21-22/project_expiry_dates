@@ -162,17 +162,19 @@ def remove_amount_db(id, amount):
     """
     # Global variables
     global db_cursor
-    # if the product exists in the "expired" database, reduce the amount value
-    if check_expiry_database(id):
-        expireID = get_oldest_product(id)
-        db_cursor.execute("UPDATE expired\
-            SET aantal = (aantal - {})\
-            WHERE expireID = '{}'".format(amount, expireID))
-        # if the amount is zero, delete the entry
-        if get_amount(expireID) <= 0:
-            db_cursor.execute("DELETE FROM expired\
+    # Reduce the amount, one by one
+    for _ in range(amount):
+        # if the product exists in the "expired" database, reduce the amount value by 1
+        if check_expiry_database(id):
+            expireID = get_oldest_product(id)
+            db_cursor.execute("UPDATE expired\
+                SET aantal = (aantal - 1)\
                 WHERE expireID = '{}'".format(expireID))
-        mydb.commit()
+            # if the amount is zero, delete the entry
+            if get_amount(expireID) <= 0:
+                db_cursor.execute("DELETE FROM expired\
+                    WHERE expireID = '{}'".format(expireID))
+            mydb.commit()
         
 
 
