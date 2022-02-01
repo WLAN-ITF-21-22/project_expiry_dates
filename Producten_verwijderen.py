@@ -51,16 +51,13 @@ def print_list(list):
         print(item)
 
 
-def read_excel():
+def read_excel(path, name):
     """
     Reads the Excel sheet set earlier.
     Returns all barcodes of sold products and the amount sold
     """
-    # Global variables
-    global path_remove_products
-    global name_remove_products
     # Excel
-    xlsx_remove_file = Path(path_remove_products, name_remove_products)
+    xlsx_remove_file = Path(path, name)
     wb_remove_obj = openpyxl.load_workbook(xlsx_remove_file)
 
     sheet_remove = wb_remove_obj.active
@@ -81,19 +78,17 @@ def read_excel():
     return products
 
 
-def find_id_db(barcode):
+def find_id_db(cursor, barcode):
     """
     Given a barcode,
     this function returns the id if it exists in the database, 
     else it returns None and prints an error message
     """
-    # Global variables
-    global db_cursor
     # Read data
-    db_cursor.execute("SELECT id \
+    cursor.execute("SELECT id \
         FROM products \
         WHERE code = {}".format(barcode))
-    result = db_cursor.fetchall()
+    result = cursor.fetchall()
 
     # Check if the barcode is already in the database
     if result == []:
@@ -106,53 +101,47 @@ def find_id_db(barcode):
         return result[0][0]
 
 
-def check_expiry_database(id):
+def check_expiry_database(cursor, id):
     """
     Checks whether the product already exists within the expiration date database
     returns: True or False
     """
-    # Global variables
-    global db_cursor
     # Check if the product date already appears in the database
-    db_cursor.execute("SELECT * \
+    cursor.execute("SELECT * \
         FROM expired\
         WHERE id = '{}'".format(id))
-    result = db_cursor.fetchall()
+    result = cursor.fetchall()
     # If the product is not yet in the expired database
     return result != []
 
 
-def get_oldest_product(id):
+def get_oldest_product(cursor, id):
     """
     Searches the "expired" database for the product with the oldest expiration date
     Returns: the expireID (Primary key for database "expired") of the product with the oldest expiration date
     """
-    # Global variables
-    global db_cursor
     # if the product exists in the "expired" database, continue
-    if check_expiry_database(id):
-        db_cursor.execute("SELECT expireID\
+    if check_expiry_database(cursor, id):
+        cursor.execute("SELECT expireID\
             FROM expired\
             WHERE id = '{}'\
             ORDER BY vervaldatum".format(id)) 
-        result = db_cursor.fetchall()
+        result = cursor.fetchall()
         return result[0][0]
 
 
-def get_amount(expireID):
+def get_amount(cursor, expireID):
     """
     Returns: the amount of products with the given ID
     """
-    # Global variables
-    global db_cursor
-    db_cursor.execute("SELECT aantal\
+    cursor.execute("SELECT aantal\
         FROM expired\
         WHERE expireID = '{}'".format(expireID))
-    result = db_cursor.fetchall()
+    result = cursor.fetchall()
     return result[0][0]
 
 
-def remove_amount_db(id, amount):
+def remove_amount_db(db, cursor, id, amount):
     """
     If the product is in the "expired" database,
     the amount of products will be reducted by the amount specified in the Excel file
@@ -160,25 +149,23 @@ def remove_amount_db(id, amount):
     the product is deleted from the "expired" database
     Returns: nothing
     """
-    # Global variables
-    global db_cursor
     # Reduce the amount, one by one
     for _ in range(amount):
         # if the product exists in the "expired" database, reduce the amount value by 1
-        if check_expiry_database(id):
-            expireID = get_oldest_product(id)
-            db_cursor.execute("UPDATE expired\
+        if check_expiry_database(cursor, id):
+            expireID = get_oldest_product(cursor, id)
+            cursor.execute("UPDATE expired\
                 SET aantal = (aantal - 1)\
                 WHERE expireID = '{}'".format(expireID))
             # if the amount is zero, delete the entry
-            if get_amount(expireID) <= 0:
-                db_cursor.execute("DELETE FROM expired\
+            if get_amount(cursor, expireID) <= 0:
+                cursor.execute("DELETE FROM expired\
                     WHERE expireID = '{}'".format(expireID))
-            mydb.commit()
+            db.commit()
         
 
 
-def loop_remove_products(sold_products):
+def loop_remove_products(db, cursor, sold_products):
     """
     Loops over a list of (Excel) entries,
     executing "remove_amount_db" for every product
@@ -187,8 +174,8 @@ def loop_remove_products(sold_products):
     for product in sold_products:
         barcode = product[0]
         amount = product[1]
-        db_id = find_id_db(barcode)
-        remove_amount_db(db_id, amount)
+        db_id = find_id_db(cursor, barcode)
+        remove_amount_db(db, cursor, db_id, amount)
 
 
 #########################

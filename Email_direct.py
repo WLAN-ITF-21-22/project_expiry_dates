@@ -38,17 +38,12 @@ msg = MIMEMultipart()
 ### FUNCTIONS ###
 #################
 
-def retrieve_pdf():
-    # Global variables
-    global sender
-    global receiver
-    global reports_folder
-    global msg
-    # Email configuration
-    msg['From'] = sender
-    msg['To'] = receiver
-    msg['Subject'] = 'Briefing'
-
+def retrieve_pdf(reports_folder):
+    """
+    This function get the latest PDF report in the "Reports" directory
+    Returns: a pdf payload, for attaching to an email
+    """
+    # Get latest PDF report
     current_date = datetime.now()
 
     name = 'Rapport vervaldata - {}'.format(current_date.date())
@@ -66,27 +61,26 @@ def retrieve_pdf():
     return payload
 
 
-def construct_message():
-    # Global variables
-    global message
-    # Building message for mail
+def construct_message(msg, sender, receiver, message, folder):
+    # Email configuration
+    msg['From'] = sender
+    msg['To'] = receiver
+    msg['Subject'] = 'Briefing'
+
     msg.attach(MIMEText(message, 'plain'))
-    msg.attach(retrieve_pdf())
+    msg.attach(retrieve_pdf(folder))
     
     return msg.as_string()
 
 
-def send_mail():
-    # Global variables
-    global sender
-    global password
+def send_mail(msg, sender, receiver, message, folder):
     #use gmail with port
     session = smtplib.SMTP('smtp.gmail.com', 587)
     #enable security
     session.starttls()
     session.login(sender, password)
     # Message
-    text = construct_message()
+    text = construct_message(msg, sender, receiver, message, folder)
 
     # Send, quit and print feedback
     session.sendmail(sender, receiver, text)
