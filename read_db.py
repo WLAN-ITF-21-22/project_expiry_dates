@@ -14,9 +14,9 @@ import mysql.connector  # if not recognized, use "pip install mysql-connector-py
 
 def read_db():
     mydb = mysql.connector.connect(
-        host="127.0.0.1",
-        user="unicenta",
-        password="abc123!",
+        host="localhost",
+        user="root",
+        password="1234",
         database="unicentaopos"
     )
 

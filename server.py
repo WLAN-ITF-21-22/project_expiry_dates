@@ -50,15 +50,15 @@ path_remove_products = '.'
 name_remove_products = 'Producten verwijderen.xlsx'
 
 # MySQL
-mysql_host="127.0.0.1"
-mysql_user="unicenta"  # "root" or "unicenta"
-mysql_password="abc123!"
+mysql_host="localhost"
+mysql_user="root"  # "root" or "unicenta"
+mysql_password="1234"
 mysql_database="unicentaopos"
 
 # Pdfkit MySQL
 username = 'root'
 password = '1234'
-host = '127.0.0.1'
+host = 'localhost'
 database = 'unicentaopos'
 
 path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
