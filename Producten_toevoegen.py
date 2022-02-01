@@ -52,16 +52,13 @@ def print_list(list):
         print(item)
 
 
-def read_excel():
+def read_excel(path, name):
     """
     Reads the Excel sheet set earlier.
     Returns: a list containing every cell's barcode, amount and expiration date (except the first cell)
     """
-    # Global variables
-    global path_add_products
-    global name_add_products
     # Excel
-    xlsx_add_file = Path(path_add_products, name_add_products)
+    xlsx_add_file = Path(path, name)
     wb_add_obj = openpyxl.load_workbook(xlsx_add_file)
 
     sheet_add = wb_add_obj.active
@@ -83,19 +80,17 @@ def read_excel():
     return products
     
 
-def find_id_db(barcode):
+def find_id_db(cursor, barcode):
     """
     Given a barcode,
     this function returns the id if it exists in the database, 
     else it returns None and prints an error message
     """
-    # Global variables
-    global db_cursor
     # Read data
-    db_cursor.execute("SELECT id \
+    cursor.execute("SELECT id \
         FROM products \
         WHERE code = {}".format(barcode))
-    result = db_cursor.fetchall()
+    result = cursor.fetchall()
 
     # Check if the barcode is already in the database
     if result == []:
@@ -108,47 +103,43 @@ def find_id_db(barcode):
         return result[0][0]
 
 
-def check_expiry_database(id, expiration_date):
+def check_expiry_database(cursor, id, expiration_date):
     """
     Checks whether the product already exists within the expiration date database
     returns: True or False
     """
-    # Global variables
-    global db_cursor
     # Check if the product with the expiration date already appears in the database
-    db_cursor.execute("SELECT * \
+    cursor.execute("SELECT * \
         FROM expired\
         WHERE id = '{}' AND vervaldatum = '{}'".format(id, expiration_date))
-    result = db_cursor.fetchall()
+    result = cursor.fetchall()
     # # If the product is not yet in the expired database
     return result != []
 
 
 
-def write_entry_expiration_db(id, scanned_product):
+def write_entry_expiration_db(db, cursor, id, scanned_product):
     """
     Updates "expires" database
     If the product with expiration date already appears, the product is updated
     If the product with expiration date does not appear, the product is inserted
     """
-    # Global variables
-    global db_cursor
     # Variables to be inserted
     amount = scanned_product[1]
     expiration_date = scanned_product[2]
     # Check if the product already exists in the database with this expiration date
-    if check_expiry_database(id, expiration_date):
+    if check_expiry_database(cursor, id, expiration_date):
         # if the product is already in the database with the correct expiration date, update the amount
-        db_cursor.execute("UPDATE expired \
+        cursor.execute("UPDATE expired \
             SET aantal = (aantal + {})\
             WHERE id = '{}' AND vervaldatum = '{}'".format(amount, id, expiration_date))
         # print("updated")
     else:
         # if the product is not yet in the database, add it
-        db_cursor.execute("INSERT INTO expired(id, aantal, vervaldatum)\
+        cursor.execute("INSERT INTO expired(id, aantal, vervaldatum)\
             VALUES('{}', {}, '{}')".format(id, amount, expiration_date))
         # print("inserted")
-    mydb.commit()
+    db.commit()
 
 
 #########################

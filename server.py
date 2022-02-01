@@ -19,6 +19,9 @@ def install(package):
 ### IMPORTS ###
 ###############
 
+# Current directory
+import os
+
 # Producten toevoegen, verwijderen
 import openpyxl             # pip install openpyxl
 from pathlib import Path
@@ -49,24 +52,25 @@ from flask import Flask, render_template, redirect
 #################
 
 # Excel-documents
-path_add_products = '.'
+path_add_products = os.getcwd()
 name_add_products = 'Producten toevoegen.xlsx'
-path_remove_products = '.'
+path_remove_products = os.getcwd()
 name_remove_products = 'Producten verwijderen.xlsx'
 
 # MySQL
-mysql_host="localhost"
-mysql_user="root"  # "root" or "unicenta"
-mysql_password="1234"
+mysql_host="127.0.0.1"  # "localhost" or "127.0.0.1"
+mysql_user="unicenta"  # "root" or "unicenta"
+mysql_password="abc123!"  # "1234" or "abc123!"
 mysql_database="unicentaopos"
 
 # Pdfkit MySQL
 username = 'root'
 password = '1234'
-host = 'localhost'
+host = '127.0.0.1'  # "localhost" or "127.0.0.1"
 database = 'unicentaopos'
 
-path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+path_wkhtmltopdf = os.getcwd() + '\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+print(path_wkhtmltopdf)
 
 # E-mail
 message = """
@@ -122,10 +126,10 @@ def index():
 def add_product():
   print ('Adding products to expired database')
 
-  scanned_products = Producten_toevoegen.read_excel()
+  scanned_products = Producten_toevoegen.read_excel(path_add_products, name_add_products)
   for scanned_product in scanned_products:
-      barcode_db_id = Producten_toevoegen.find_id_db(scanned_product[0])
-      Producten_toevoegen.write_entry_expiration_db(barcode_db_id, scanned_product)
+      barcode_db_id = Producten_toevoegen.find_id_db(db_cursor, scanned_product[0])
+      Producten_toevoegen.write_entry_expiration_db(mydb, db_cursor, barcode_db_id, scanned_product)
   
   return redirect("http://127.0.0.1:5000/")
 
@@ -134,8 +138,8 @@ def add_product():
 def remove_product():
   print('Removing products from expired database')
 
-  sold_products = Producten_verwijderen.read_excel()
-  Producten_verwijderen.loop_remove_products(sold_products)
+  sold_products = Producten_verwijderen.read_excel(path_remove_products, name_remove_products)
+  Producten_verwijderen.loop_remove_products(mydb, db_cursor, sold_products)
 
   return redirect("http://127.0.0.1:5000/")
 
@@ -146,7 +150,7 @@ def create_report():
   current_date = datetime.now()
 
   db_info = Rapport_opstellen.pandas_read_db()
-  Rapport_opstellen.build_pdf_html(db_info)
+  Rapport_opstellen.build_pdf_html(config, db_info)
 
   return redirect("http://127.0.0.1:5000/")
 
@@ -155,7 +159,7 @@ def create_report():
 def send_email():
   print("Sending email")
 
-  Email_direct.send_mail()
+  Email_direct.send_mail(msg, sender, receiver, message, reports_folder)
 
   return redirect("http://127.0.0.1:5000/")
 

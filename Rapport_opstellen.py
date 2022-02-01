@@ -21,19 +21,19 @@ host = '127.0.0.1'
 database = 'unicentaopos'
 db_connection_str = 'mysql+pymysql://{}:{}@{}/{}'.format(username, password, host, database)
 
-"""
-'wkhtmlopdf' needs to be installed for this to work
-If not yet installed, go to folder 'wkhtmlopdf' 
-and execute 'wkhtmltox-0.12.6-1.msvc2015-win64.exe' to install it
-"""
-path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+# """
+# 'wkhtmlopdf' needs to be installed for this to work
+# If not yet installed, go to folder 'wkhtmlopdf' 
+# and execute 'wkhtmltox-0.12.6-1.msvc2015-win64.exe' to install it
+# """
+# path_wkhtmltopdf = '.\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 
 #####################
 ### CONFIGURATION ###
 #####################
 
 db_connection = create_engine(db_connection_str)
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+# config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
 #################
 ### FUNCTIONS ###
@@ -45,7 +45,7 @@ def pandas_read_db():
     Returns: data in a dataframe format
     """
     # Global variables
-    global db_connection
+    global db_connection  # Connection via flask fails, needs to use global variable to connect
     # SQL string
     sql_string = '\
         SELECT c.name as \'Categorie\', aantal as \'#\', p.name as \'Naam\', vervaldatum as \'Vervaldatum\' \
@@ -59,14 +59,12 @@ def pandas_read_db():
     return expired_dataframe
 
 
-def build_pdf_html(dataframe):
+def build_pdf_html(pdfkit_config, dataframe):
     """
     Uses dataframe formatted data to build pdf document
     Creates pdf documents in folder "Reports"
     Returns: nothing
     """
-    # Global variables
-    global config
     current_date = datetime.now()
 
     # Build document
@@ -83,7 +81,7 @@ def build_pdf_html(dataframe):
     # Save document
     pdfkit.from_file('templates/Report.html', \
         "{}/{}.pdf".format(folder,name), \
-        configuration=config)
+        configuration=pdfkit_config)
 
 
 def write_html_heading():
